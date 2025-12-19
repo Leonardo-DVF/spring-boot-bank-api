@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @NotBlank
     @Email
     @Size(max = 120)
-    @Column(nullable = false, length = 120, unique = true)
+    @Column(nullable = false, length = 120)
     private String email;
 
     @NotBlank
@@ -104,7 +104,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return this.active;
     }
 
     public void setUsername(String username) {
