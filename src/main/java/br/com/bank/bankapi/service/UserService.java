@@ -10,6 +10,8 @@ import br.com.bank.bankapi.exception.UserNotFoundException;
 import br.com.bank.bankapi.mapper.UserMapper;
 import br.com.bank.bankapi.model.user.User;
 import br.com.bank.bankapi.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +42,10 @@ public class UserService {
 
     // Registers a new user ensuring a unique username and encrypted password
     public void register(RegisterDTO data) {
+        log.info("Starting user registration. username={}", data.username());
+
         if (repository.findByUsername(data.username()) != null) {
+            log.warn("Registration failed: username already exists. username={}", data.username());
             throw new UserAlreadyExistsException("Username already in use");
         }
 
@@ -46,18 +53,23 @@ public class UserService {
         User newUser = UserMapper.toEntity(data, encryptedPassword);
 
         repository.save(newUser);
+
+        log.info("User registered successfully. username={}", data.username());
     }
 
     // Authenticates the user and returns a JWT token, throwing an exception if credentials are invalid
     public LoginResponseDTO login(AuthenticationDTO data) {
+        log.info("Starting authentication. username={}", data.username());
 
         UserDetails user = repository.findByUsername(data.username());
 
         if (user == null) {
-          throw new UserNotFoundException("User not found with username: " + data.username());
+            log.warn("Authentication failed: user not found. username={}", data.username());
+            throw new UserNotFoundException("User not found with username: " + data.username());
         }
 
         if (!user.isEnabled()) {
+            log.warn("Authentication failed: user inactive. username={}", data.username());
             throw new UserInactiveException("User is inactive");
         }
 
@@ -67,8 +79,11 @@ public class UserService {
             var auth = this.authenticationManager.authenticate(usernamePassword);
             var token = tokenService.generateToken((User) auth.getPrincipal());
 
+            log.info("User authenticated successfully. username={}", data.username());
             return new LoginResponseDTO(token);
+
         }catch (BadCredentialsException e) {
+            log.warn("Authentication failed: invalid credentials. username={}", data.username());
             throw new InvalidCredentialsException("Invalid username or password");
         }
     }

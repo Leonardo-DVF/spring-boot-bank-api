@@ -113,13 +113,13 @@ class UserServiceTest {
     // Should throw an exception when the user is not found during login
     @Test
     public void loginUserNotFound() {
-        AuthenticationDTO dto = new AuthenticationDTO("naoexiste", "12345678");
+        AuthenticationDTO dto = new AuthenticationDTO("nonexistentUser", "12345678");
 
-        when(repository.findByUsername("naoexiste")).thenReturn(null);
+        when(repository.findByUsername("nonexistentUser")).thenReturn(null);
 
         assertThrows(UserNotFoundException.class, () -> userService.login(dto));
 
-        verify(repository).findByUsername("naoexiste");
+        verify(repository).findByUsername("nonexistentUser");
 
         verify(authenticationManager, never()).authenticate(any());
         verify(tokenService, never()).generateToken(any());
@@ -145,7 +145,7 @@ class UserServiceTest {
     // Should throw an exception when login credentials are invalid
     @Test
     public void loginUserInvalidCredentials() {
-        AuthenticationDTO dto = new AuthenticationDTO("leo", "senhaerrada");
+        AuthenticationDTO dto = new AuthenticationDTO("leo", "wrongPassword");
 
         UserDetails userDetails = mock(UserDetails.class);
         when(userDetails.isEnabled()).thenReturn(true);
