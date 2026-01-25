@@ -1,6 +1,6 @@
-package br.com.bank.bankapi.service;
+package br.com.bank.bankapi.auth.service;
 
-import br.com.bank.bankapi.repository.UserRepository;
+import br.com.bank.bankapi.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

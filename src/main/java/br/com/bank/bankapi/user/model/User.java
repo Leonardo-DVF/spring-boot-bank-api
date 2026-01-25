@@ -1,6 +1,6 @@
-package br.com.bank.bankapi.model.user;
+package br.com.bank.bankapi.user.model;
 
-import br.com.bank.bankapi.enums.Role;
+import br.com.bank.bankapi.user.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,6 @@
-package br.com.bank.bankapi.dto.user;
+package br.com.bank.bankapi.auth.dto;
 
-import br.com.bank.bankapi.enums.Role;
+import br.com.bank.bankapi.user.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

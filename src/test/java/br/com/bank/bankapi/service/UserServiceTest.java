@@ -1,16 +1,17 @@
 package br.com.bank.bankapi.service;
 
-import br.com.bank.bankapi.dto.user.AuthenticationDTO;
-import br.com.bank.bankapi.dto.user.LoginResponseDTO;
-import br.com.bank.bankapi.dto.user.RegisterDTO;
-import br.com.bank.bankapi.enums.Role;
-import br.com.bank.bankapi.exception.InvalidCredentialsException;
-import br.com.bank.bankapi.exception.UserAlreadyExistsException;
-import br.com.bank.bankapi.exception.UserInactiveException;
-import br.com.bank.bankapi.exception.UserNotFoundException;
-import br.com.bank.bankapi.model.user.User;
-import br.com.bank.bankapi.repository.UserRepository;
-import br.com.bank.bankapi.security.TokenService;
+import br.com.bank.bankapi.auth.dto.AuthenticationDTO;
+import br.com.bank.bankapi.auth.dto.LoginResponseDTO;
+import br.com.bank.bankapi.auth.dto.RegisterDTO;
+import br.com.bank.bankapi.auth.service.UserService;
+import br.com.bank.bankapi.user.enums.Role;
+import br.com.bank.bankapi.auth.exception.InvalidCredentialsException;
+import br.com.bank.bankapi.user.exception.UserAlreadyExistsException;
+import br.com.bank.bankapi.user.exception.UserInactiveException;
+import br.com.bank.bankapi.user.exception.UserNotFoundException;
+import br.com.bank.bankapi.user.model.User;
+import br.com.bank.bankapi.user.repository.UserRepository;
+import br.com.bank.bankapi.auth.security.TokenService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,8 @@ class UserServiceTest {
     @Mock
     TokenService tokenService;
 
-    @InjectMocks UserService userService;
+    @InjectMocks
+    UserService userService;
 
     // Should register a user when the username does not exist
     @Test

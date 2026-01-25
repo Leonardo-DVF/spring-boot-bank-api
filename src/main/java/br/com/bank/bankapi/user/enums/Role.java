@@ -1,4 +1,4 @@
-package br.com.bank.bankapi.enums;
+package br.com.bank.bankapi.user.enums;
 
 public enum Role {
     ROLE_CLIENT("client"),

@@ -1,6 +1,6 @@
-package br.com.bank.bankapi.security;
+package br.com.bank.bankapi.auth.security;
 
-import br.com.bank.bankapi.model.user.User;
+import br.com.bank.bankapi.user.model.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;

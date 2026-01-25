@@ -1,9 +1,9 @@
-package br.com.bank.bankapi.controller;
+package br.com.bank.bankapi.auth.controller;
 
-import br.com.bank.bankapi.dto.user.AuthenticationDTO;
-import br.com.bank.bankapi.dto.user.LoginResponseDTO;
-import br.com.bank.bankapi.dto.user.RegisterDTO;
-import br.com.bank.bankapi.service.UserService;
+import br.com.bank.bankapi.auth.dto.AuthenticationDTO;
+import br.com.bank.bankapi.auth.dto.LoginResponseDTO;
+import br.com.bank.bankapi.auth.dto.RegisterDTO;
+import br.com.bank.bankapi.auth.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
-package br.com.bank.bankapi.security;
+package br.com.bank.bankapi.auth.security;
 
-import br.com.bank.bankapi.repository.UserRepository;
+import br.com.bank.bankapi.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

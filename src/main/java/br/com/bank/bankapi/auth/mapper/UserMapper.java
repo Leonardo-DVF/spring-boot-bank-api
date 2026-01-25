@@ -1,7 +1,7 @@
-package br.com.bank.bankapi.mapper;
+package br.com.bank.bankapi.auth.mapper;
 
-import br.com.bank.bankapi.dto.user.RegisterDTO;
-import br.com.bank.bankapi.model.user.User;
+import br.com.bank.bankapi.auth.dto.RegisterDTO;
+import br.com.bank.bankapi.user.model.User;
 
 public final class UserMapper {
     private UserMapper() {}

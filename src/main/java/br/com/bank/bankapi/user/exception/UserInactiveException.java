@@ -1,4 +1,4 @@
-package br.com.bank.bankapi.exception;
+package br.com.bank.bankapi.user.exception;
 
 public class UserInactiveException extends RuntimeException {
     public UserInactiveException(String message) {

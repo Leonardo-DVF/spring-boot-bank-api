@@ -1,4 +1,4 @@
-package br.com.bank.bankapi.dto.user;
+package br.com.bank.bankapi.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

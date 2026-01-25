@@ -1,5 +1,9 @@
 package br.com.bank.bankapi.exception;
 
+import br.com.bank.bankapi.auth.exception.InvalidCredentialsException;
+import br.com.bank.bankapi.user.exception.UserAlreadyExistsException;
+import br.com.bank.bankapi.user.exception.UserInactiveException;
+import br.com.bank.bankapi.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

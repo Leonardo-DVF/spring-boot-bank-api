@@ -1,4 +1,4 @@
-package br.com.bank.bankapi.security;
+package br.com.bank.bankapi.auth.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
