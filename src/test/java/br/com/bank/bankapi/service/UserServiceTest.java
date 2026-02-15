@@ -4,6 +4,7 @@ import br.com.bank.bankapi.auth.dto.AuthenticationDTO;
 import br.com.bank.bankapi.auth.dto.LoginResponseDTO;
 import br.com.bank.bankapi.auth.dto.RegisterDTO;
 import br.com.bank.bankapi.auth.service.UserService;
+import br.com.bank.bankapi.exception.core.ResourceNotFoundException;
 import br.com.bank.bankapi.user.enums.Role;
 import br.com.bank.bankapi.auth.exception.InvalidCredentialsException;
 import br.com.bank.bankapi.user.exception.UserAlreadyExistsException;
@@ -118,7 +119,7 @@ class UserServiceTest {
 
         when(repository.findByUsername("nonexistentUser")).thenReturn(null);
 
-        assertThrows(UserNotFoundException.class, () -> userService.login(dto));
+        assertThrows(ResourceNotFoundException.class, () -> userService.login(dto));
 
         verify(repository).findByUsername("nonexistentUser");
 
