@@ -8,7 +8,6 @@ import br.com.bank.bankapi.user.enums.Role;
 import br.com.bank.bankapi.auth.exception.InvalidCredentialsException;
 import br.com.bank.bankapi.user.exception.UserAlreadyExistsException;
 import br.com.bank.bankapi.user.exception.UserInactiveException;
-import br.com.bank.bankapi.user.exception.UserNotFoundException;
 import br.com.bank.bankapi.user.model.User;
 import br.com.bank.bankapi.user.repository.UserRepository;
 import br.com.bank.bankapi.auth.security.TokenService;

@@ -4,9 +4,9 @@ import br.com.bank.bankapi.auth.dto.AuthenticationDTO;
 import br.com.bank.bankapi.auth.dto.LoginResponseDTO;
 import br.com.bank.bankapi.auth.dto.RegisterDTO;
 import br.com.bank.bankapi.auth.exception.InvalidCredentialsException;
+import br.com.bank.bankapi.exception.core.ResourceNotFoundException;
 import br.com.bank.bankapi.user.exception.UserAlreadyExistsException;
 import br.com.bank.bankapi.user.exception.UserInactiveException;
-import br.com.bank.bankapi.user.exception.UserNotFoundException;
 import br.com.bank.bankapi.auth.mapper.UserMapper;
 import br.com.bank.bankapi.user.model.User;
 import br.com.bank.bankapi.user.repository.UserRepository;
@@ -65,7 +65,7 @@ public class UserService {
 
         if (user == null) {
             log.warn("Authentication failed: user not found. username={}", data.username());
-            throw new UserNotFoundException("User not found with username: " + data.username());
+            throw new ResourceNotFoundException("User", "username", data.username());
         }
 
         if (!user.isEnabled()) {
@@ -82,7 +82,7 @@ public class UserService {
             log.info("User authenticated successfully. username={}", data.username());
             return new LoginResponseDTO(token);
 
-        }catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             log.warn("Authentication failed: invalid credentials. username={}", data.username());
             throw new InvalidCredentialsException("Invalid username or password");
         }
