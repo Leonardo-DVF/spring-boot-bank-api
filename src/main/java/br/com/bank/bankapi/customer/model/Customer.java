@@ -20,7 +20,7 @@ public class Customer {
 
     @NotBlank
     @Size(min = 3, max = 120)
-    @Column(nullable = false, length = 120)
+    @Column(name = "full_name", nullable = false, length = 120)
     private String fullName;
 
     @NotBlank
@@ -34,13 +34,13 @@ public class Customer {
     private CustomerStatus status;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     protected Customer() {}
@@ -62,5 +62,40 @@ public class Customer {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public CustomerStatus getStatus() {
+        return status;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setStatus(CustomerStatus status) { this.status = status;
     }
 }
