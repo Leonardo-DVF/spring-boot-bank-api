@@ -1,6 +1,6 @@
 package br.com.bank.bankapi.auth.security;
 
-import br.com.bank.bankapi.user.repository.UserRepository;
+import br.com.bank.bankapi.auth.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,32 +16,44 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    TokenService tokenService;
-    UserRepository userRepository;
+    private final TokenService tokenService;
+    private final AuthorizationService authorizationService;
 
-    public SecurityFilter(TokenService tokenService, UserRepository userRepository) {
+    public SecurityFilter(TokenService tokenService, AuthorizationService authorizationService) {
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
+        this.authorizationService = authorizationService;
     }
 
-    // Executes the filter on each request, validating the JWT token and authenticating the user in the security context
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
-        if(token != null){
-            var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByUsername(login);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = recoverToken(request);
+
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String login = tokenService.validateToken(token);
+
+            if (login != null && !login.isBlank()) {
+                UserDetails user = authorizationService.loadUserByUsername(login);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 
-    // Retrieves the JWT token from the Authorization header of the request
-    private String recoverToken(HttpServletRequest request){
-        var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+    private String recoverToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        return authHeader.substring(7);
     }
 }
