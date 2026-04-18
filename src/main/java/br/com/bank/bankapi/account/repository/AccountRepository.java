@@ -4,10 +4,14 @@ import br.com.bank.bankapi.account.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     List<Account> findAllByCustomerId(UUID customerId);
 
+    boolean existsByAgencyAndNumber(String agency, String number);
+
+    Optional<Account> findByAgencyAndNumber(String agency, String number);
 }

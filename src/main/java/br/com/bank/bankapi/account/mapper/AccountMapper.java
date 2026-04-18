@@ -2,7 +2,7 @@ package br.com.bank.bankapi.account.mapper;
 
 import br.com.bank.bankapi.account.dto.AccountResponseDTO;
 import br.com.bank.bankapi.account.dto.CreateAccountDTO;
-import br.com.bank.bankapi.account.enums.Status;
+import br.com.bank.bankapi.account.enums.AccountStatus;
 import br.com.bank.bankapi.account.model.Account;
 
 import java.util.UUID;
@@ -17,7 +17,7 @@ public final class AccountMapper {
                 dto.agency(),
                 dto.number(),
                 dto.type(),
-                Status.ACTIVE
+                AccountStatus.ACTIVE
         );
     }
 

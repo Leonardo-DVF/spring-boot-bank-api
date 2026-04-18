@@ -1,6 +1,5 @@
 package br.com.bank.bankapi.transaction.service;
 
-import br.com.bank.bankapi.account.enums.Status;
 import br.com.bank.bankapi.account.model.Account;
 import br.com.bank.bankapi.account.repository.AccountRepository;
 import br.com.bank.bankapi.customer.model.Customer;
@@ -10,7 +9,6 @@ import br.com.bank.bankapi.exception.core.ResourceNotFoundException;
 import br.com.bank.bankapi.exception.core.ConflictException;
 import br.com.bank.bankapi.transaction.dto.CreateTransactionDTO;
 import br.com.bank.bankapi.transaction.dto.TransactionResponseDTO;
-import br.com.bank.bankapi.transaction.enums.TransactionType;
 import br.com.bank.bankapi.transaction.mapper.TransactionMapper;
 import br.com.bank.bankapi.transaction.model.Transaction;
 import br.com.bank.bankapi.transaction.repository.TransactionRepository;

@@ -1,15 +1,21 @@
 package br.com.bank.bankapi.account.model;
 
 import br.com.bank.bankapi.account.enums.AccountType;
-import br.com.bank.bankapi.account.enums.Status;
+import br.com.bank.bankapi.account.enums.AccountStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "accounts")
+@Table(
+        name = "accounts",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_accounts_agency_number", columnNames = {"agency", "number"})
+        }
+)
 public class Account {
 
     @Id
@@ -31,7 +37,7 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Status status;
+    private AccountStatus status;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal balance;
@@ -44,7 +50,7 @@ public class Account {
 
     protected Account() {}
 
-    public Account(UUID customerId, String agency, String number, AccountType type, Status status) {
+    public Account(UUID customerId, String agency, String number, AccountType type, AccountStatus status) {
         this.customerId = customerId;
         this.agency = agency;
         this.number = number;
@@ -74,11 +80,23 @@ public class Account {
     public String getAgency() { return agency; }
     public String getNumber() { return number; }
     public AccountType getType() { return type; }
-    public Status getStatus() { return status; }
+    public AccountStatus getStatus() { return status; }
     public BigDecimal getBalance() { return balance; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(AccountStatus status) { this.status = status; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
