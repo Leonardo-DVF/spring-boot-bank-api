@@ -1,5 +1,11 @@
 # Bank API
 
+[![Java](https://img.shields.io/badge/Java-17-blue)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.13-brightgreen)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-ready-blue)](https://www.docker.com/)
+[![Tests](https://img.shields.io/badge/tests-JUnit%205-green)](https://junit.org/junit5/)
+
 REST API para gerenciamento bancário desenvolvida com Java e Spring Boot. O projeto cobre cadastro e autenticação de usuários, gerenciamento de clientes, contas bancárias e operações financeiras como depósito, saque, transferência e consulta de histórico.
 
 ## Objetivo
@@ -149,6 +155,89 @@ http://localhost:8080/v3/api-docs
 - `POST /transactions/transfer`: realiza transferência entre contas
 - `GET /transactions/{id}`: consulta uma transação por id
 - `GET /transactions/accounts/{accountId}`: lista o histórico paginado de uma conta
+
+## Exemplos de Requisições
+
+### Cadastro de Usuário
+
+```json
+{
+  "username": "leonardo",
+  "email": "leonardo@email.com",
+  "password": "123456",
+  "role": "ROLE_CLIENT"
+}
+```
+
+### Login
+
+```json
+{
+  "username": "leonardo",
+  "password": "123456"
+}
+```
+
+### Cadastro de Cliente
+
+```json
+{
+  "fullName": "Leonardo Ferreira",
+  "document": "21872010075"
+}
+```
+
+### Criação de Conta
+
+```json
+{
+  "agency": "0001",
+  "number": "123456-7",
+  "type": "CHECKING"
+}
+```
+
+### Depósito
+
+```json
+{
+  "accountId": "550e8400-e29b-41d4-a716-446655440000",
+  "amount": 150.00,
+  "description": "Depósito em dinheiro"
+}
+```
+
+### Saque
+
+```json
+{
+  "accountId": "550e8400-e29b-41d4-a716-446655440000",
+  "amount": 100.00,
+  "description": "Saque em caixa eletrônico"
+}
+```
+
+### Transferência
+
+```json
+{
+  "sourceAccountId": "550e8400-e29b-41d4-a716-446655440000",
+  "destinationAgency": "0001",
+  "destinationAccountNumber": "765432-1",
+  "amount": 250.00,
+  "description": "Transferência entre contas"
+}
+```
+
+## Collection
+
+O projeto inclui uma collection do Postman em:
+
+```text
+docs/Bank API.postman_collection.json
+```
+
+Configure a variável `baseUrl` como `http://localhost:8080` e, após o login, preencha a variável `token` com o JWT retornado.
 
 ## Regras de Negócio
 
