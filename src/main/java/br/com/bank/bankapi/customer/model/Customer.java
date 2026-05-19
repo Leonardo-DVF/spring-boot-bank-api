@@ -2,10 +2,6 @@ package br.com.bank.bankapi.customer.model;
 
 import br.com.bank.bankapi.customer.enums.CustomerStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -18,22 +14,16 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank
-    @Size(min = 3, max = 120)
     @Column(name = "full_name", nullable = false, length = 120)
     private String fullName;
 
-    @NotBlank
-    @CPF
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(name = "document", nullable = false, unique = true, length = 11)
     private String document;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 15)
+    @Column(name = "status", nullable = false, length = 15)
     private CustomerStatus status;
 
-    @NotNull
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 

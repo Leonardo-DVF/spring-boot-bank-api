@@ -31,16 +31,28 @@ public class CustomerService {
 
     @Transactional
     public CustomerResponseDTO create(CreateCustomerDTO dto, User user) {
+
         UUID userId = user.getId();
+        String normalizedDocument = dto.document().replaceAll("\\D", "");
 
         log.info("Creating customer for userId={}", userId);
 
-        if (customerRepository.existsByUserId(user.getId())) {
+        if (customerRepository.existsByUserId(userId)) {
             log.warn("Customer creation blocked: customer already exists for userId={}", userId);
             throw new ConflictException("Customer already exists for this user");
         }
 
-        Customer customer = CustomerMapper.toEntity(dto, user.getId());
+        if (customerRepository.existsByDocument(normalizedDocument)) {
+            log.warn("Customer creation blocked: document already exists. document={}", normalizedDocument);
+            throw new ConflictException("Customer document already exists");
+        }
+
+        CreateCustomerDTO normalizedDto = new CreateCustomerDTO(
+                dto.fullName(),
+                normalizedDocument
+        );
+
+        Customer customer = CustomerMapper.toEntity(normalizedDto, userId);
         Customer saved = customerRepository.save(customer);
 
         log.info("Customer created successfully: customerId={} for userId={}", saved.getId(), userId);
@@ -71,7 +83,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public CustomerResponseDTO update(UpdateCustomerDTO dto, User user) {
+    public CustomerResponseDTO updateMyCustomer(UpdateCustomerDTO dto, User user) {
         UUID userId = user.getId();
 
         log.info("Updating customer profile for userId={}", userId);
@@ -100,14 +112,12 @@ public class CustomerService {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> {
-                    log.warn("Customer not found for status update: customerId={} requestedByUserId={}",
-                            customerId, userId);
+                    log.warn("Customer not found for status update: customerId={} requestedByUserId={}", customerId, userId);
                     return new ResourceNotFoundException("Customer", customerId);
                 });
 
         if (!customer.getUserId().equals(userId)) {
-            log.warn("Forbidden status update: customerId={} ownerUserId={} requestedByUserId={}",
-                    customerId, customer.getUserId(), userId);
+            log.warn("Forbidden status update: customerId={} ownerUserId={} requestedByUserId={}", customerId, customer.getUserId(), userId);
             throw new ForbiddenOperationException("You can't update this customer status");
         }
 
