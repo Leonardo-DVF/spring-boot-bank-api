@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // Validation exceptions
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -71,20 +73,13 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Malformed or invalid request body", req.getRequestURI(), null);
     }
 
+    // Bussiness exceptions
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleResourceNotFoundException(
             ResourceNotFoundException ex,
             HttpServletRequest req
     ) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI(), null);
-    }
-
-    @ExceptionHandler(ForbiddenOperationException.class)
-    public ResponseEntity<ApiError> handleForbiddenOperation(
-            ForbiddenOperationException ex,
-            HttpServletRequest req
-    ) {
-        return build(HttpStatus.FORBIDDEN, ex.getMessage(), req.getRequestURI(), null);
     }
 
     @ExceptionHandler(ConflictException.class)
@@ -95,36 +90,12 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, ex.getMessage(), req.getRequestURI(), null);
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ApiError> handleInvalidCredentialsException(
-            InvalidCredentialsException ex,
+    @ExceptionHandler(ForbiddenOperationException.class)
+    public ResponseEntity<ApiError> handleForbiddenOperation(
+            ForbiddenOperationException ex,
             HttpServletRequest req
     ) {
-        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), req.getRequestURI(), null);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ApiError> handleUsernameNotFound(
-            UsernameNotFoundException ex,
-            HttpServletRequest req
-    ) {
-        return build(HttpStatus.UNAUTHORIZED, "Invalid credentials", req.getRequestURI(), null);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiError> handleAccessDenied(
-            AccessDeniedException ex,
-            HttpServletRequest req
-    ) {
-        return build(HttpStatus.FORBIDDEN, "Access denied", req.getRequestURI(), null);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiError> handleAuthentication(
-            AuthenticationException ex,
-            HttpServletRequest req
-    ) {
-        return build(HttpStatus.UNAUTHORIZED, "Authentication failed", req.getRequestURI(), null);
+        return build(HttpStatus.FORBIDDEN, ex.getMessage(), req.getRequestURI(), null);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -143,6 +114,49 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.FORBIDDEN, ex.getMessage(), req.getRequestURI(), null);
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiError> handleInvalidCredentialsException(
+            InvalidCredentialsException ex,
+            HttpServletRequest req
+    ) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), req.getRequestURI(), null);
+    }
+
+    // Spring Security exceptions
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiError> handleUsernameNotFound(
+            UsernameNotFoundException ex,
+            HttpServletRequest req
+    ) {
+        return build(HttpStatus.UNAUTHORIZED, "Invalid credentials", req.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleAuthentication(
+            AuthenticationException ex,
+            HttpServletRequest req
+    ) {
+        return build(HttpStatus.UNAUTHORIZED, "Authentication failed", req.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(
+            AccessDeniedException ex,
+            HttpServletRequest req
+    ) {
+        return build(HttpStatus.FORBIDDEN, "Access denied", req.getRequestURI(), null);
+    }
+
+    // Database/infrastructure exceptions
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex,
+            HttpServletRequest req
+    ) {
+        return build(HttpStatus.CONFLICT, "Database constraint violation", req.getRequestURI(), null);
+    }
+
+    // Fallback exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpected(Exception ex, HttpServletRequest req) {
         log.error("Unexpected error on path={}", req.getRequestURI(), ex);

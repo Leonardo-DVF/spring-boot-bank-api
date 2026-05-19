@@ -17,8 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
-    @Autowired
-    SecurityFilter securityFilter;
+
+    private final SecurityFilter securityFilter;
+
+    public SecurityConfigurations(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
     // Configures the security filter chain, public routes and JWT-based authentication
     @Bean
@@ -28,8 +32,18 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                "/error"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

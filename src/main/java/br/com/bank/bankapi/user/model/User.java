@@ -1,11 +1,7 @@
 package br.com.bank.bankapi.user.model;
 
-import br.com.bank.bankapi.user.enums.Role;
+import br.com.bank.bankapi.user.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,27 +18,21 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
     @Column(nullable = false, length = 50, unique = true)
     private String username;
 
-    @NotBlank
-    @Email
-    @Size(max = 120)
-    @Column(nullable = false, length = 120)
+    @Column(nullable = false, length = 120, unique = true)
     private String email;
 
-    @NotBlank
     @Column(nullable = false, length = 72)
     private String password;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private Role role;
+    private UserRole role;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -56,7 +46,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String email, String password, Role role) {
+    public User(String username, String email, String password, UserRole role) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -79,27 +69,23 @@ public class User implements UserDetails {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
@@ -110,6 +96,7 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getEmail() {
         return email;
     }
@@ -127,16 +114,8 @@ public class User implements UserDetails {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public boolean isActive() {
@@ -151,16 +130,8 @@ public class User implements UserDetails {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Instant getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override
