@@ -1,6 +1,5 @@
 package br.com.bank.bankapi.account.service;
 
-import br.com.bank.bankapi.account.dto.AccountAmountDTO;
 import br.com.bank.bankapi.account.dto.CreateAccountDTO;
 import br.com.bank.bankapi.account.enums.AccountStatus;
 import br.com.bank.bankapi.account.enums.AccountType;
@@ -73,50 +72,19 @@ class AccountServiceTest {
     }
 
     @Test
-    void depositShouldUpdateAccountBalance() {
+    void updateStatusShouldUpdateAccountStatus() {
         User user = user(UUID.randomUUID());
         Customer customer = customer(UUID.randomUUID(), user.getId());
         Account account = account(UUID.randomUUID(), customer.getId(), AccountStatus.ACTIVE, "100.00");
-        AccountAmountDTO dto = new AccountAmountDTO(new BigDecimal("50.00"));
 
         when(customerRepository.findByUserId(user.getId())).thenReturn(Optional.of(customer));
         when(accountRepository.findById(account.getId())).thenReturn(Optional.of(account));
         when(accountRepository.save(account)).thenReturn(account);
 
-        accountService.deposit(account.getId(), dto, user);
+        accountService.updateStatus(account.getId(), new br.com.bank.bankapi.account.dto.UpdateAccountStatusDTO(AccountStatus.BLOCKED), user);
 
-        assertEquals(new BigDecimal("150.00"), account.getBalance());
+        assertEquals(AccountStatus.BLOCKED, account.getStatus());
         verify(accountRepository).save(account);
-    }
-
-    @Test
-    void withdrawShouldRejectInsufficientFunds() {
-        User user = user(UUID.randomUUID());
-        Customer customer = customer(UUID.randomUUID(), user.getId());
-        Account account = account(UUID.randomUUID(), customer.getId(), AccountStatus.ACTIVE, "30.00");
-        AccountAmountDTO dto = new AccountAmountDTO(new BigDecimal("50.00"));
-
-        when(customerRepository.findByUserId(user.getId())).thenReturn(Optional.of(customer));
-        when(accountRepository.findById(account.getId())).thenReturn(Optional.of(account));
-
-        assertThrows(ConflictException.class, () -> accountService.withdraw(account.getId(), dto, user));
-
-        verify(accountRepository, never()).save(account);
-    }
-
-    @Test
-    void depositShouldRejectBlockedAccount() {
-        User user = user(UUID.randomUUID());
-        Customer customer = customer(UUID.randomUUID(), user.getId());
-        Account account = account(UUID.randomUUID(), customer.getId(), AccountStatus.BLOCKED, "100.00");
-        AccountAmountDTO dto = new AccountAmountDTO(new BigDecimal("50.00"));
-
-        when(customerRepository.findByUserId(user.getId())).thenReturn(Optional.of(customer));
-        when(accountRepository.findById(account.getId())).thenReturn(Optional.of(account));
-
-        assertThrows(ConflictException.class, () -> accountService.deposit(account.getId(), dto, user));
-
-        verify(accountRepository, never()).save(account);
     }
 
     private User user(UUID id) {

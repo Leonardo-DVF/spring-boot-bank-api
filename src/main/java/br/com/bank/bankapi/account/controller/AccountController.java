@@ -1,7 +1,6 @@
 package br.com.bank.bankapi.account.controller;
 
 import br.com.bank.bankapi.account.dto.AccountResponseDTO;
-import br.com.bank.bankapi.account.dto.AccountAmountDTO;
 import br.com.bank.bankapi.account.dto.CreateAccountDTO;
 import br.com.bank.bankapi.account.dto.UpdateAccountStatusDTO;
 import br.com.bank.bankapi.account.service.AccountService;
@@ -30,7 +29,7 @@ import java.util.UUID;
 @RequestMapping("/accounts")
 @Tag(
         name = "Account",
-        description = "Endpoints for account creation, retrieval, status update, deposit, and withdrawal operations."
+        description = "Endpoints for account creation, retrieval, listing, and status management."
 )
 @SecurityRequirement(name = "bearerAuth")
 public class AccountController {
@@ -256,124 +255,6 @@ public class AccountController {
                 id, user.getId(), dto.status());
 
         AccountResponseDTO updated = accountService.updateStatus(id, dto, user);
-        return ResponseEntity.ok(updated);
-    }
-
-    @Operation(
-            summary = "Deposit into account",
-            description = "Performs a deposit into a specific account belonging to the authenticated user."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Deposit completed successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = AccountResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid request data",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Access denied",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Account not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            )
-    })
-    @PostMapping("/{id}/deposit")
-    public ResponseEntity<AccountResponseDTO> deposit(
-            @PathVariable UUID id,
-            @Valid @RequestBody AccountAmountDTO dto,
-            @AuthenticationPrincipal User user
-    ) {
-        log.info("Account deposit requested. accountId={} userId={} amount={}",
-                id, user.getId(), dto.amount());
-
-        AccountResponseDTO updated = accountService.deposit(id, dto, user);
-        return ResponseEntity.ok(updated);
-    }
-
-    @Operation(
-            summary = "Withdraw from account",
-            description = "Performs a withdrawal from a specific account belonging to the authenticated user."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Withdrawal completed successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = AccountResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid request data or insufficient balance",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Access denied",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Account not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class)
-                    )
-            )
-    })
-    @PostMapping("/{id}/withdraw")
-    public ResponseEntity<AccountResponseDTO> withdraw(
-            @PathVariable UUID id,
-            @Valid @RequestBody AccountAmountDTO dto,
-            @AuthenticationPrincipal User user
-    ) {
-        log.info("Account withdrawal requested. accountId={} userId={} amount={}",
-                id, user.getId(), dto.amount());
-
-        AccountResponseDTO updated = accountService.withdraw(id, dto, user);
         return ResponseEntity.ok(updated);
     }
 }

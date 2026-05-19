@@ -1,6 +1,5 @@
 package br.com.bank.bankapi.account.service;
 
-import br.com.bank.bankapi.account.dto.AccountAmountDTO;
 import br.com.bank.bankapi.account.dto.CreateAccountDTO;
 import br.com.bank.bankapi.account.dto.AccountResponseDTO;
 import br.com.bank.bankapi.account.dto.UpdateAccountStatusDTO;
@@ -19,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,60 +111,6 @@ public class AccountService {
         return AccountMapper.toResponse(saved);
     }
 
-    @Transactional
-    public AccountResponseDTO deposit(UUID accountId, AccountAmountDTO dto, User user) {
-        UUID userId = user.getId();
-
-        log.info("Deposit requested: accountId={} requestedByUserId={} amount={}",
-                accountId, userId, dto.amount());
-
-        Customer customer = getCustomerByUser(user);
-        Account account = getAccountById(accountId);
-
-        validateAccountOwnership(account, customer);
-        validateActiveAccount(account);
-
-        BigDecimal newBalance = account.getBalance().add(dto.amount());
-        account.setBalance(newBalance);
-
-        Account saved = accountRepository.save(account);
-
-        log.info("Deposit completed successfully: accountId={} requestedByUserId={} amount={} newBalance={}",
-                saved.getId(), userId, dto.amount(), saved.getBalance());
-
-        return AccountMapper.toResponse(saved);
-    }
-
-    @Transactional
-    public AccountResponseDTO withdraw(UUID accountId, AccountAmountDTO dto, User user) {
-        UUID userId = user.getId();
-
-        log.info("Withdrawal requested: accountId={} requestedByUserId={} amount={}",
-                accountId, userId, dto.amount());
-
-        Customer customer = getCustomerByUser(user);
-        Account account = getAccountById(accountId);
-
-        validateAccountOwnership(account, customer);
-        validateActiveAccount(account);
-
-        if (account.getBalance().compareTo(dto.amount()) < 0) {
-            log.warn("Withdrawal blocked: insufficient funds. accountId={} requestedByUserId={} balance={} requestedAmount={}",
-                    accountId, userId, account.getBalance(), dto.amount());
-            throw new ConflictException("Insufficient funds");
-        }
-
-        BigDecimal newBalance = account.getBalance().subtract(dto.amount());
-        account.setBalance(newBalance);
-
-        Account saved = accountRepository.save(account);
-
-        log.info("Withdrawal completed successfully: accountId={} requestedByUserId={} amount={} newBalance={}",
-                saved.getId(), userId, dto.amount(), saved.getBalance());
-
-        return AccountMapper.toResponse(saved);
-    }
-
     private Customer getCustomerByUser(User user) {
         UUID userId = user.getId();
 
@@ -193,11 +137,4 @@ public class AccountService {
         }
     }
 
-    private void validateActiveAccount(Account account) {
-        if (account.getStatus() != AccountStatus.ACTIVE) {
-            log.warn("Operation blocked: account is not active. accountId={} status={}",
-                    account.getId(), account.getStatus());
-            throw new ConflictException("Account is not active");
-        }
-    }
 }
