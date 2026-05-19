@@ -1,44 +1,24 @@
 package br.com.bank.bankapi.transaction.mapper;
 
-import br.com.bank.bankapi.transaction.dto.CreateTransactionDTO;
 import br.com.bank.bankapi.transaction.dto.TransactionResponseDTO;
-import br.com.bank.bankapi.transaction.enums.TransactionType;
 import br.com.bank.bankapi.transaction.model.Transaction;
 
-import java.time.Instant;
+public final class TransactionMapper {
 
-public class TransactionMapper {
-
-    private TransactionMapper() {}
-
-    public static Transaction toEntity(CreateTransactionDTO dto) {
-        var toAccountId = (dto.type() == TransactionType.TRANSFER)
-                ? dto.toAccountId()
-                : null;
-
-        return new Transaction(
-                dto.accountId(),
-                dto.type(),
-                dto.amount(),
-                null,
-                null,
-                dto.description(),
-                toAccountId
-        );
+    private TransactionMapper() {
     }
 
-
-    public static TransactionResponseDTO toResponse(Transaction tx) {
+    public static TransactionResponseDTO toResponse(Transaction transaction) {
         return new TransactionResponseDTO(
-                tx.getId(),
-                tx.getAccountId(),
-                tx.getType(),
-                tx.getAmount(),
-                tx.getBalanceBefore(),
-                tx.getBalanceAfter(),
-                tx.getToAccountId(),
-                tx.getDescription(),
-                tx.getCreatedAt()
+                transaction.getId(),
+                transaction.getAccountId(),
+                transaction.getType(),
+                transaction.getAmount(),
+                transaction.getBalanceBefore(),
+                transaction.getBalanceAfter(),
+                transaction.getToAccountId(),
+                transaction.getDescription(),
+                transaction.getCreatedAt()
         );
     }
 }
